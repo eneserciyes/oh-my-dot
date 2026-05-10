@@ -1,5 +1,7 @@
 macos-titlebar-style = hidden
 theme = Vague
 font-size = 14
+font-family = "JetBrainsMono Nerd Font Mono"
 clipboard-paste-protection = false
+
 
