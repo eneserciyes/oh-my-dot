@@ -1,5 +1,5 @@
-macos-titlebar-style = hidden
+# macos-titlebar-style = hidden
 theme = Vague
-font-size = 14
+font-size = 11
 clipboard-paste-protection = false
 

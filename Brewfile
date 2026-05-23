@@ -7,7 +7,6 @@ brew "hostess"
 brew "lazygit"
 brew "neovim"
 brew "node"
-brew "openssh"
 brew "pandoc"
 brew "proxychains-ng"
 brew "python@3.13", link: false

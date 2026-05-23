@@ -2,9 +2,6 @@
 
 DIRS=(
     "$HOME/ws"
-    "$HOME/ws/notes"
-    "$HOME/ws/documents"
-    "$HOME"
 )
 
 if [[ $# -eq 1 ]]; then
