@@ -304,7 +304,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 
-local lsp_servers = { "lua_ls", "basedpyright", "clangd", "ruff" }
+local lsp_servers = { "lua_ls", "basedpyright", "clangd", "ruff", "rust_analyzer" }
 vim.lsp.enable(lsp_servers)
 map('n', '<leader>lt', function()
 	local clients = vim.lsp.get_clients()

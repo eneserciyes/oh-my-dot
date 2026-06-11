@@ -1,5 +1,8 @@
-# macos-titlebar-style = hidden
-theme = Vague
+macos-titlebar-style = hidden
+theme = TokyoNight
 font-size = 11
 clipboard-paste-protection = false
+font-family = JetBrains Mono Nerd Font Mono
+
+
 

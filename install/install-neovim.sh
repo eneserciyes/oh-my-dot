@@ -15,8 +15,10 @@ case "$ARCH" in
     *) echo "Unsupported architecture: $ARCH"; exit 1 ;;
 esac
 
-NVIM_VERSION=$(curl -s https://api.github.com/repos/neovim/neovim/releases/latest | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
-curl -Lo /tmp/nvim.tar.gz "https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-linux-${ARCH}.tar.gz"
+# Pinned to avoid depending on the rate-limited GitHub API (unauthenticated
+# requests are limited to 60/hr per IP, which shared machines blow through).
+NVIM_VERSION="0.12.3"
+curl -fLo /tmp/nvim.tar.gz "https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-linux-${ARCH}.tar.gz"
 
 mkdir -p ~/.local
 tar xzf /tmp/nvim.tar.gz -C /tmp
