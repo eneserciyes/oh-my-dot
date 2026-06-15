@@ -43,9 +43,6 @@ run install-node.sh
 run install-tree-sitter-cli.sh
 run install-pyright.sh
 
-# APT repo packages
-run install-slack.sh
-
 # Desktop apps (Linux only)
 run install-solaar.sh
 

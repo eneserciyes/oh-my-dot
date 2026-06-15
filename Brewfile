@@ -23,6 +23,5 @@ brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
 
 cask "obsidian"
-cask "slack"
 cask "raycast"
 cask "sioyek"

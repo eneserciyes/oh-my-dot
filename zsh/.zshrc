@@ -9,8 +9,20 @@ else
 fi
 
 
-finder() {
-    open .
+# Recency-sorted directory picker: top-level non-hidden dirs in $HOME plus the
+# immediate subdirs of ~/ws, newest-first; cd into the pick
+recent-files() {
+    local dir
+    dir=$({ fd --type d --max-depth 1 --exclude node_modules --exclude Library . "$HOME";
+            fd --type d --max-depth 1 --exclude node_modules . "$HOME/ws"; } 2>/dev/null \
+        | perl -e 'my %seen; print map { $_->[1] } sort { $b->[0] <=> $a->[0] } grep { !$seen{$_->[1]}++ } map { my $f=$_; chomp $f; [ (stat $f)[9], "$f\n" ] } <>' \
+        | fzf --height 40% --reverse --preview 'ls -la {}') || return
+    if [[ -n $dir ]]; then
+        BUFFER="cd ${(q)dir}"
+        zle accept-line
+    else
+        zle reset-prompt
+    fi
 }
 mkcd() {
   mkdir -p "$1" && cd "$1"
@@ -32,8 +44,24 @@ re-tcc() {
 	tmux resize-pane -t 1 -y 20%
 }
 
-zle -N finder
-bindkey '^f' finder
+zle -N recent-files
+bindkey '^f' recent-files
+
+# C-s: pick an ssh target with fzf and connect (names the tmux window if inside tmux)
+ssh-picker() {
+    local host
+    host=$(grep -E "^Host " ~/.ssh/config | awk '$2 != "*" {print $2}' \
+        | fzf --height 40% --reverse --prompt="ssh> ") || return
+    if [[ -n $host ]]; then
+        BUFFER="ssh-connect.sh ${(q)host}"
+        zle accept-line
+    else
+        zle reset-prompt
+    fi
+}
+zle -N ssh-picker
+bindkey '^s' ssh-picker
+stty -ixon  # free C-s from terminal flow control
 
 HISTFILE=~/.zsh_history
 HISTSIZE=50000
@@ -91,3 +119,32 @@ bindkey '^Xe' edit-command-line
 [[ -s /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 source <(fzf --zsh)
+
+
+# >>> ari-pilot dora run guard >>>
+__ari_pilot_confirm_dora_run() {
+    [[ $- == *i* ]] || return 0
+    printf '\n[ari-pilot] Prefer starting flows from the dashboard.\n' >&2
+    printf '[ari-pilot] WARNING: existing Dora nodes will be killed before this command runs.\n' >&2
+    local answer
+    printf 'Continue? [y/N] ' >&2
+    read -r answer
+    [[ "$answer" == [yY] || "$answer" == [yY][eE][sS] ]]
+}
+
+if [[ $- == *i* ]]; then
+    dora() {
+        if [[ "$1" == "run" ]]; then
+            __ari_pilot_confirm_dora_run || return 130
+        fi
+        command dora "$@"
+    }
+
+    uv() {
+        if [[ "$1" == "run" && "$2" == "dora" && "$3" == "run" ]]; then
+            __ari_pilot_confirm_dora_run || return 130
+        fi
+        command uv "$@"
+    }
+fi
+# <<< ari-pilot dora run guard <<<
