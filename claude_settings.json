@@ -1,0 +1,8 @@
+{
+  "effortLevel": "xhigh",
+  "fastMode": true,
+  "model": "claude-opus-4-8[1m]",
+  "ultracode": true,
+  "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true
+}

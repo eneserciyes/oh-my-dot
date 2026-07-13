@@ -1,0 +1,73 @@
+# Common Aliases
+# GNU ls uses --color=auto; BSD ls (stock macOS) uses -G. Probe on a fixed path
+# (-d /) so it's constant-time and immune to an unreadable/huge current dir.
+if ls --color=auto -d / >/dev/null 2>&1; then
+    alias ls='ls --color=auto'
+else
+    alias ls='ls -G'
+fi
+alias ll='ls -lah'
+alias la='ls -A'
+alias l='ls -CF'
+alias grep='grep --color=auto'
+alias df='df -h'
+alias du='du -h'
+alias c='clear'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+
+# Git Aliases
+alias gs='git status'
+alias ga='git add'
+alias gaa='git add -A'
+alias gc='git commit -m'
+alias gp='git push'
+alias gl='git pull'
+alias gco='git checkout'
+alias gb='git branch'
+alias gd='git diff'
+
+# Docker Aliases (the -a suffix means ALL: drma/drmia wipe every container/image)
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias drm='docker rm'
+alias drma='docker rm $(docker ps -a -q)'
+alias dimg='docker images'
+alias drmi='docker rmi'
+alias drmia='docker rmi $(docker images -q)'
+alias dstart='docker start'
+alias dstop='docker stop'
+alias dexec='docker exec -it'
+
+# Docker Compose Aliases
+alias dcu='docker compose up'
+alias dcd='docker compose down'
+alias dcb='docker compose build'
+alias dcr='docker compose run --rm'
+alias dclean='docker compose down --remove-orphans --volumes'
+
+# RC aliases
+alias src='if [ -n "$ZSH_VERSION" ]; then source ~/.zshrc; else source ~/.bashrc; fi'
+alias shellrc='if [ -n "$ZSH_VERSION" ]; then edit ~/.zshrc; else edit ~/.bashrc; fi'
+alias bashrc='nvim ~/.bashrc'
+alias zshrc='nvim ~/.zshrc'
+alias vimrc='vim ~/.vimrc'
+alias nvimrc='nvim ~/.config/nvim/init.lua'
+alias gitconfig='nvim ~/.gitconfig'
+alias zellijrc='nvim ~/.config/zellij/config.kdl'
+alias yazirc='nvim ~/.config/yazi/yazi.toml'
+
+# Neovim / multiplexer shortcuts
+alias v='nvim'
+alias zj='zellij'                  # default layout: full-screen nvim + floating terminal (Alt+f)
+alias zjw='zellij --layout wide'   # editor left / terminal right
+alias zjs='zellij --layout shell'  # plain shell session (no auto-nvim)
+
+# venv
+alias venv="source .venv/bin/activate"
+
+# agents
+alias c="META_CLAUDE_USE_AI_GATEWAY=1 META_CLAUDE_EXPERIMENTAL_OPUS_FAST=1 CLAUDE_CODE_ENABLE_OPUS_4_7_FAST_MODE=1 CLAUDE_CODE_VERSION_OVERRIDE=2.1.156 claude --dangerously-skip-permissions"

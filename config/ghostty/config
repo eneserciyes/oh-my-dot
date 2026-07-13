@@ -1,0 +1,29 @@
+# ~/.config/ghostty/config
+# Ghostty terminal configuration. Ghostty reads this path on Linux and on macOS
+# (macOS also checks its Application Support path). Format is simple
+# `key = value` lines. Handy commands:
+#   ghostty +show-config     show the resolved configuration
+#   ghostty +list-fonts      browse available fonts (grep -i nerd)
+#   ghostty +list-themes     browse built-in themes
+
+# Primary font. The "Mono" Nerd Font variant has every glyph pre-scaled to a
+# single terminal cell, so icons render crisp and aligned. (The non-Mono
+# "Hack Nerd Font" has wide icon glyphs that the terminal squeezes into one
+# cell, making them look narrow/squished.) install_deps.sh installs the family.
+# NOTE: Ghostty also falls back to bundled Nerd Font symbols automatically, so
+# icons render even if this font is missing — this just makes Hack the main font.
+font-family = "Hack Nerd Font Mono"
+# font-size = 13
+
+# Option must act as Alt for the zellij keybinds (Alt+f floating terminal,
+# Alt+h/j/k/l focus, fzf's Alt-C). Ghostty's unset default only does this on
+# U.S. keyboard layouts, so set it explicitly. (Trade-off: Option no longer
+# types special characters like é/© — use press-and-hold instead.)
+macos-option-as-alt = true
+
+# Common extras — uncomment and tweak to taste:
+# theme = "GruvboxDark"          # `ghostty +list-themes` to browse built-ins
+# background-opacity = 0.95
+# confirm-close-surface = false
+# window-padding-x = 4
+# window-padding-y = 4
