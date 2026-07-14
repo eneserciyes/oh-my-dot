@@ -13,7 +13,7 @@
 # NOTE: Ghostty also falls back to bundled Nerd Font symbols automatically, so
 # icons render even if this font is missing — this just makes Hack the main font.
 font-family = "Hack Nerd Font Mono"
-# font-size = 13
+font-size = 11
 
 # Option must act as Alt for the zellij keybinds (Alt+f floating terminal,
 # Alt+h/j/k/l focus, fzf's Alt-C). Ghostty's unset default only does this on
@@ -21,8 +21,8 @@ font-family = "Hack Nerd Font Mono"
 # types special characters like é/© — use press-and-hold instead.)
 macos-option-as-alt = true
 
-# Common extras — uncomment and tweak to taste:
-# theme = "GruvboxDark"          # `ghostty +list-themes` to browse built-ins
+# Common extras — uncomment and tweak to taste.
+theme = "Vague"
 # background-opacity = 0.95
 # confirm-close-surface = false
 # window-padding-x = 4

@@ -1,0 +1,46 @@
+// ~/.config/zellij/layouts/default.kdl
+// Default workspace: full-screen nvim editor with a small floating terminal in
+// the bottom-right corner. Alt+f shows/hides (and focuses) it, quake-style.
+// To keep it visible while you edit, pin it: Ctrl+p then i, or click its pin
+// icon — a pinned pane stays on top and ignores Alt+f until unpinned.
+// Move/resize it in pane mode (Ctrl+p, then arrows / n / +/-).
+//
+// New tabs (Ctrl+t then n) open as a plain shell — see new_tab_template below.
+// Other layouts: `zellij --layout wide` (editor left / terminal right; alias
+// zjw) and `zellij --layout shell` (plain shell session; alias zjs).
+layout {
+    tab name="edit" focus=true {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        pane command="nvim" {
+            focus true
+        }
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+        // Anchored bottom-right. x + width > 100% on purpose: zellij floors
+        // each percentage (can leave a 1-col gap) then clamps the overshoot,
+        // so the right edge sits flush at any terminal size.
+        floating_panes {
+            pane {
+                name "terminal"
+                x "56%"
+                y "73%"
+                width "45%"
+                height "25%"
+            }
+        }
+    }
+
+    // New tabs are just a flat shell (no editor, no split).
+    new_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        pane
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+}
