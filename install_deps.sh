@@ -453,6 +453,11 @@ echo
 echo "Markdown viewer:"
 smart_install glow glow install_glow_release
 
+# ---- system monitor (btop) -------------------------------------------------
+echo
+echo "System monitor:"
+ensure_pkg btop btop "https://github.com/aristocratos/btop"
+
 # ---- C compiler (treesitter compiles parsers on install) -------------------
 echo
 echo "Build prerequisites (treesitter parsers):"

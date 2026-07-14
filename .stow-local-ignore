@@ -1,9 +1,0 @@
-\.gitignore
-Brewfile
-CLAUDE\.md
-INSTALL\.md
-Makefile
-settings\.sh
-\.stow-local-ignore
-^\.git
-install

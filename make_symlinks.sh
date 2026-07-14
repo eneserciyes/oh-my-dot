@@ -53,6 +53,14 @@ for dir in nvim tmux ghostty; do
     echo "  $target -> $DOTFILES/config/$dir"
 done
 
+# SSH config -> ~/.ssh/config (only this file; keys/sockets stay in place).
+# ~/.ssh must be mode 0700 or ssh ignores it.
+SSH_DIR="$HOME/.ssh"
+mkdir -p "$SSH_DIR"; chmod 700 "$SSH_DIR"
+[ -e "$SSH_DIR/config" ] && [ ! -L "$SSH_DIR/config" ] && backup "$SSH_DIR/config"
+ln -sf "$DOTFILES/config/ssh/config" "$SSH_DIR/config"
+echo "  $SSH_DIR/config -> $DOTFILES/config/ssh/config"
+
 # Executable scripts -> ~/.local/bin/<name> (without the .sh extension)
 LOCAL_BIN="$HOME/.local/bin"
 mkdir -p "$LOCAL_BIN"
@@ -84,4 +92,4 @@ source ~/."$SYMLINK_BASENAME"
 # Don't leak helpers/temp vars into the live shell when sourced.
 unset -f backup 2>/dev/null
 unset name email ans whost wname wemail gv file rc dir target script \
-     GITLOCAL SYMLINK_BASENAME DOTFILES_BKP LOCAL_BIN 2>/dev/null
+     GITLOCAL SYMLINK_BASENAME DOTFILES_BKP LOCAL_BIN SSH_DIR 2>/dev/null
