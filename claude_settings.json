@@ -1,4 +1,17 @@
 {
+  "permissions": {
+    "allow": [
+      "Read(*)",
+      "WebSearch(*)",
+      "WebFetch(*)",
+      "Bash(*)"
+    ],
+    "deny": [
+      "Bash(dd:*)",
+      "Bash(mkfs:*)",
+      "Bash(sudo:*)"
+    ]
+  },
   "effortLevel": "xhigh",
   "fastMode": true,
   "model": "claude-opus-4-8[1m]",
