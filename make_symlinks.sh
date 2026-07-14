@@ -53,6 +53,17 @@ for dir in nvim yazi zellij ghostty; do
     echo "  $target -> $DOTFILES/config/$dir"
 done
 
+# Executable scripts -> ~/.local/bin/<name> (without the .sh extension)
+LOCAL_BIN="$HOME/.local/bin"
+mkdir -p "$LOCAL_BIN"
+echo "Linking scripts into $LOCAL_BIN"
+for script in ssh-connect tmux-session-dispensary open-github; do
+    target="$LOCAL_BIN/$script"
+    [ -e "$target" ] && [ ! -L "$target" ] && backup "$target"
+    ln -sf "$DOTFILES/scripts/$script.sh" "$target"
+    echo "  $target -> $DOTFILES/scripts/$script.sh"
+done
+
 # Install the CLI tools the nvim/zellij/yazi configs use (idempotent;
 # best-effort). Skip entirely with SKIP_DEPS=1. See install_deps.sh.
 if [ "${SKIP_DEPS:-0}" != "1" ] && [ -x "$DOTFILES/install_deps.sh" ]; then
@@ -72,5 +83,5 @@ source ~/."$SYMLINK_BASENAME"
 
 # Don't leak helpers/temp vars into the live shell when sourced.
 unset -f backup 2>/dev/null
-unset name email ans whost wname wemail gv file rc dir target \
-     GITLOCAL SYMLINK_BASENAME DOTFILES_BKP 2>/dev/null
+unset name email ans whost wname wemail gv file rc dir target script \
+     GITLOCAL SYMLINK_BASENAME DOTFILES_BKP LOCAL_BIN 2>/dev/null

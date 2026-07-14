@@ -12,6 +12,7 @@ return {
   ----------------------------------------------------------------------------
   {
       "vague-theme/vague.nvim",
+      enabled = false,
       priority = 1000,
       lazy = false,
       config = function()
@@ -38,7 +39,7 @@ return {
   -- Alternative: tokyonight. To use it, set enabled = true and disable vscode.
   {
     "folke/tokyonight.nvim",
-    enabled = false, -- set to true to enable (and disable the others)
+    enabled = true, -- set to true to enable (and disable the others)
     priority = 1000,
     config = function()
       vim.cmd.colorscheme("tokyonight-night")
