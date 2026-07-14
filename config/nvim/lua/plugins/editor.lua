@@ -84,11 +84,9 @@ return {
 
   ----------------------------------------------------------------------------
   -- persistence.nvim — per-directory sessions: saves your open buffers, splits,
-  -- and tabpages so they return when you reopen nvim in that project. This is
-  -- the EDITOR half of "reopen my workspace"; zellij (session_serialization)
-  -- restores the surrounding panes/tabs. Launched with no file args (e.g. when
-  -- zellij relaunches an `nvim` pane) it auto-restores that dir's session;
-  -- `nvim foo.py` skips restore. Manual control via <leader>q*.
+  -- and tabpages so they return when you reopen nvim in that project. Launched
+  -- with no file args it auto-restores that dir's session; `nvim foo.py` skips
+  -- restore. Manual control via <leader>q*.
   ----------------------------------------------------------------------------
   {
     "folke/persistence.nvim",

@@ -114,8 +114,7 @@ return {
     event = "InsertEnter",
     opts = {
       -- Tab AND Enter both accept the suggestion; arrows move the selection
-      -- (C-n/C-p work too, but only OUTSIDE zellij — zellij's own Ctrl-n/Ctrl-p
-      -- mode keys eat them first), C-space toggles the menu, C-e hides it.
+      -- (C-n/C-p work too), C-space toggles the menu, C-e hides it.
       -- (blink's "default" preset accepts only with C-y, hence preset "none".)
       -- When the menu is closed, "fallback" lets Enter/Tab behave normally
       -- (newline / indent, and autopairs' <CR> handling).

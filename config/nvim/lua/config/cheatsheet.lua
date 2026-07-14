@@ -46,7 +46,7 @@ M.sections = {
   }},
   { name = "Complete", lines = {
     "Tab / Enter      accept the suggestion",
-    "Up / Down        move the selection (C-n/C-p outside zellij)",
+    "Up / Down        move the selection (or C-n/C-p)",
     "<C-space>        open / toggle the menu",
     "<C-e>            hide the menu",
   }},
@@ -73,35 +73,13 @@ M.sections = {
     "]t / [t          next / prev TODO comment",
   }},
   { name = "Files", lines = {
-    "<leader>e        toggle file explorer (neo-tree)",
-    "<leader>o        focus the explorer",
-    "<leader>y        open yazi here (Enter opens file in editor)",
-    "<leader>Y        open yazi at cwd  (:Yazi toggle resumes last)",
+    "<leader>e        file explorer (oil)",
   }},
   { name = "Session", lines = {
     "<leader>qs       restore this directory's session",
     "<leader>ql       restore the last session",
     "<leader>qd       stop saving this session",
     "(auto-restores when you open `nvim` with no file arguments)",
-  }},
-  { name = "Zellij", lines = {
-    "Alt+f            show/hide the floating terminal (default layout)",
-    "Ctrl+p then i    pin it (stays visible; Alt+f then skips it)",
-    "Alt+h/j/k/l      move between tiled panes / adjacent tabs",
-    "Ctrl+t  then...  1-9 / arrows switch tabs, n new tab, x close",
-    "Ctrl+p  then...  n new pane, x close, d / r split down / right",
-    "Ctrl+n           resize mode      Alt+= / Alt+-  resize",
-    "Ctrl+s           scrollback (then e: edit it in nvim)",
-    "Ctrl+o then d    detach     ($ zellij attach  to reattach)",
-    "Ctrl+q           quit the session",
-    "$ zj / zjw / zjs default / wide / plain-shell layout",
-  }},
-  { name = "Yazi", lines = {
-    "h/j/k/l          navigate       Enter  open",
-    ".                toggle hidden  ~ or F1  in-app help",
-    "y / x / p        yank / cut / paste",
-    "d / a / r        delete / create / rename",
-    "q                quit (the shell `y` wrapper cd's you there)",
   }},
 }
 

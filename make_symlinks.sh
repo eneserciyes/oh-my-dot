@@ -44,7 +44,7 @@ done
 XDG_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
 mkdir -p "$XDG_CONFIG"
 echo "Linking config dirs into $XDG_CONFIG"
-for dir in nvim yazi zellij ghostty; do
+for dir in nvim tmux ghostty; do
     target="$XDG_CONFIG/$dir"
     # Back up a real (non-symlink) existing dir, then link. -n stops ln from
     # nesting the link inside an existing symlinked dir on re-run.
@@ -64,11 +64,11 @@ for script in ssh-connect tmux-session-dispensary open-github; do
     echo "  $target -> $DOTFILES/scripts/$script.sh"
 done
 
-# Install the CLI tools the nvim/zellij/yazi configs use (idempotent;
+# Install the CLI tools the nvim/tmux configs use (idempotent;
 # best-effort). Skip entirely with SKIP_DEPS=1. See install_deps.sh.
 if [ "${SKIP_DEPS:-0}" != "1" ] && [ -x "$DOTFILES/install_deps.sh" ]; then
     if [ -t 0 ]; then
-        printf "\nInstall/upgrade developer tools now (nvim, zellij, yazi, fzf, ripgrep, ruff, ty, glow)? [Y/n]: "
+        printf "\nInstall/upgrade developer tools now (nvim, tmux, fzf, ripgrep, ruff, ty, glow)? [Y/n]: "
         read -r ans
     else
         ans="y"  # non-interactive: assume yes

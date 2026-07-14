@@ -15,10 +15,10 @@
 font-family = "Hack Nerd Font Mono"
 font-size = 11
 
-# Option must act as Alt for the zellij keybinds (Alt+f floating terminal,
-# Alt+h/j/k/l focus, fzf's Alt-C). Ghostty's unset default only does this on
-# U.S. keyboard layouts, so set it explicitly. (Trade-off: Option no longer
-# types special characters like é/© — use press-and-hold instead.)
+# Option must act as Alt so fzf's Alt-C (fuzzy cd) works. Ghostty's unset
+# default only does this on U.S. keyboard layouts, so set it explicitly.
+# (Trade-off: Option no longer types special characters like é/© — use
+# press-and-hold instead.)
 macos-option-as-alt = true
 
 # Common extras — uncomment and tweak to taste.

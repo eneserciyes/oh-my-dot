@@ -57,14 +57,9 @@ alias zshrc='nvim ~/.zshrc'
 alias vimrc='vim ~/.vimrc'
 alias nvimrc='nvim ~/.config/nvim/init.lua'
 alias gitconfig='nvim ~/.gitconfig'
-alias zellijrc='nvim ~/.config/zellij/config.kdl'
-alias yazirc='nvim ~/.config/yazi/yazi.toml'
 
-# Neovim / multiplexer shortcuts
+# Neovim shortcut
 alias v='nvim'
-alias zj='zellij'                  # default layout: full-screen nvim + floating terminal (Alt+f)
-alias zjw='zellij --layout wide'   # editor left / terminal right
-alias zjs='zellij --layout shell'  # plain shell session (no auto-nvim)
 
 # venv
 alias venv="source .venv/bin/activate"

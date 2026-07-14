@@ -69,19 +69,6 @@ elif [ "$SHELL_TYPE" = "zsh" ]; then
     autoload -U compinit && compinit -C   # -C skips the slow security check
 fi
 
-# yazi: terminal file manager. Use `y` (not plain `yazi`) so that on quit your
-# shell cd's to the directory you ended up in — the wrapper Yazi documents.
-if command -v yazi >/dev/null 2>&1; then
-    y() {
-        local tmp cwd
-        tmp="$(mktemp -t yazi-cwd.XXXXXX)"
-        yazi "$@" --cwd-file="$tmp"
-        cwd="$(cat -- "$tmp")"
-        [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && cd -- "$cwd"
-        rm -f -- "$tmp"
-    }
-fi
-
 # uv shell completion (only if installed on this machine)
 if command -v uv >/dev/null 2>&1 && [ "$SHELL_TYPE" != "unknown" ]; then
     eval "$(uv generate-shell-completion "$SHELL_TYPE")"

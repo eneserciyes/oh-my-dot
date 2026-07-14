@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install_deps.sh — install the CLI tools the nvim / zellij / yazi setup uses.
+# install_deps.sh — install the CLI tools the nvim / tmux setup uses.
 #
 #   * Idempotent  : skips anything already on your PATH; safe to re-run.
 #   * Best-effort : warns and keeps going if one tool can't be installed.
@@ -12,7 +12,8 @@
 # (no root, no compiler needed):
 #     neovim  — apt ships < 0.11; the Python LSP needs the native vim.lsp API
 #     fzf     — apt ships < 0.48; the shell keybindings need `fzf --bash/--zsh`
-#     zellij, yazi, lazygit, glow — not packaged on Debian/Ubuntu
+#     lazygit, glow — not packaged on Debian/Ubuntu
+#     tmux    — apt ships an old release; built from source for a current one
 #     zoxide, ripgrep, bat, fd — distro versions lag years; upgraded when old
 # Python tools (ruff, ty) always go through uv (no brew, no root).
 #
@@ -120,7 +121,7 @@ dl() {  # dl <url> <outfile>
 
 # Map uname -m to the arch token each project uses in its release asset names.
 std_arch()   { case "$ARCH" in x86_64|amd64) echo x86_64 ;; aarch64|arm64) echo arm64 ;; *) echo "" ;; esac; }   # nvim, lazygit, glow
-rust_arch()  { case "$ARCH" in x86_64|amd64) echo x86_64 ;; aarch64|arm64) echo aarch64 ;; *) echo "" ;; esac; } # zellij, yazi
+rust_arch()  { case "$ARCH" in x86_64|amd64) echo x86_64 ;; aarch64|arm64) echo aarch64 ;; *) echo "" ;; esac; } # zoxide, ripgrep, bat, fd
 go_arch()    { case "$ARCH" in x86_64|amd64) echo amd64 ;; aarch64|arm64) echo arm64 ;; *) echo "" ;; esac; }    # fzf
 
 # Latest release tag of a GitHub repo WITHOUT the rate-limited API (60 req/hr
@@ -149,38 +150,31 @@ install_nvim_release() {
     rm -rf "$tmp"
 }
 
-install_zellij_release() {
-    local a triple url tmp
-    a="$(rust_arch)"; [ -z "$a" ] && { echo "  ! zellij: unsupported arch $ARCH"; return 1; }
-    if [ "$OS" = "Darwin" ]; then triple="${a}-apple-darwin"; else triple="${a}-unknown-linux-musl"; fi
-    url="https://github.com/zellij-org/zellij/releases/latest/download/zellij-${triple}.tar.gz"
-    echo "  → zellij     prebuilt release ($triple) -> $LOCAL_BIN"
-    if [ "$DRY_RUN" = "1" ]; then echo "    [dry-run] dl $url; tar; cp zellij -> $LOCAL_BIN"; return 0; fi
-    have_dl || { echo "  ! zellij: need curl or wget"; return 1; }
+# tmux: Debian/Ubuntu package an old release (22.04: 3.2a) that lacks features
+# the config uses (status-justify absolute-centre needs >= 3.3), so build a
+# current tmux from source there. On macOS brew already ships a recent one.
+TMUX_VERSION="3.6a"
+install_tmux_source() {  # build tmux from source into /usr/local (needs a compiler + sudo)
+    local url tmp jobs
+    url="https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz"
+    echo "  → tmux       build ${TMUX_VERSION} from source -> /usr/local (sudo make install)"
+    if [ "$DRY_RUN" = "1" ]; then echo "    [dry-run] install libevent/ncurses/bison; dl $url; ./configure; make; sudo make install"; return 0; fi
+    have_dl || { echo "  ! tmux: need curl or wget"; return 1; }
+    # dev headers + build tools tmux's ./configure needs (best-effort per manager)
+    case "$PM" in
+        apt-get) pm_install libevent-dev ncurses-dev build-essential bison pkg-config ;;
+        dnf)     pm_install libevent-devel ncurses-devel gcc make bison pkgconf-pkg-config ;;
+        pacman)  pm_install libevent ncurses base-devel bison pkgconf ;;
+        zypper)  pm_install libevent-devel ncurses-devel gcc make bison pkg-config ;;
+        apk)     pm_install libevent-dev ncurses-dev build-base bison pkgconf ;;
+    esac
     tmp="$(mktemp -d)"
-    dl "$url" "$tmp/z.tar.gz" || { rm -rf "$tmp"; return 1; }
-    tar -xzf "$tmp/z.tar.gz" -C "$tmp" || { rm -rf "$tmp"; return 1; }
-    install -m 0755 "$tmp/zellij" "$LOCAL_BIN/zellij" || { rm -rf "$tmp"; return 1; }
+    dl "$url" "$tmp/tmux.tar.gz" || { rm -rf "$tmp"; return 1; }
+    tar -xzf "$tmp/tmux.tar.gz" -C "$tmp" || { rm -rf "$tmp"; return 1; }
+    jobs="$(nproc 2>/dev/null || echo 2)"
+    ( cd "$tmp/tmux-${TMUX_VERSION}" && ./configure && make -j"$jobs" && $SUDO make install ) || { rm -rf "$tmp"; return 1; }
     rm -rf "$tmp"
-}
-
-install_yazi_release() {
-    local a triple url tmp sub
-    a="$(rust_arch)"; [ -z "$a" ] && { echo "  ! yazi: unsupported arch $ARCH"; return 1; }
-    if [ "$OS" = "Darwin" ]; then triple="${a}-apple-darwin"; else triple="${a}-unknown-linux-musl"; fi
-    url="https://github.com/sxyazi/yazi/releases/latest/download/yazi-${triple}.zip"
-    echo "  → yazi       prebuilt release ($triple) -> $LOCAL_BIN"
-    if [ "$DRY_RUN" = "1" ]; then echo "    [dry-run] dl $url; unzip; cp yazi,ya -> $LOCAL_BIN"; return 0; fi
-    have_dl || { echo "  ! yazi: need curl or wget"; return 1; }
-    command -v unzip >/dev/null 2>&1 || pm_install unzip
-    tmp="$(mktemp -d)"
-    dl "$url" "$tmp/yazi.zip" || { rm -rf "$tmp"; return 1; }
-    unzip -q "$tmp/yazi.zip" -d "$tmp" || { rm -rf "$tmp"; return 1; }
-    sub="$tmp/yazi-${triple}"
-    install -m 0755 "$sub/yazi" "$LOCAL_BIN/yazi" 2>/dev/null
-    install -m 0755 "$sub/ya"   "$LOCAL_BIN/ya"   2>/dev/null
-    rm -rf "$tmp"
-    command -v yazi >/dev/null 2>&1
+    command -v tmux >/dev/null 2>&1
 }
 
 font_present() {  # is Hack Nerd Font already installed?
@@ -390,11 +384,25 @@ else
     install_nvim_release || echo "  ! neovim: grab a release from https://github.com/neovim/neovim/releases"
 fi
 
-# ---- multiplexer + file manager (release binaries on Linux) ----------------
+# ---- multiplexer (tmux) ----------------------------------------------------
+# Version-gated like neovim/fzf: keep an existing tmux >= 3.3, otherwise brew
+# install (macOS) or build a current release from source (Linux).
 echo
-echo "Multiplexer + file manager:"
-smart_install zellij zellij install_zellij_release
-smart_install yazi   yazi   install_yazi_release
+echo "Multiplexer:"
+tv=""
+if command -v tmux >/dev/null 2>&1; then
+    # tmux reports its version with -V, not --version (so ver_mm can't read it).
+    tv="$(tmux -V 2>/dev/null | sed -n '1s/.*[ v]\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p')"
+fi
+if [ -n "$tv" ] && ! ver_lt "$tv" "3.3"; then
+    printf '  ✓ %-10s present (%s)\n' tmux "$tv"
+elif [ "$PM" = "brew" ]; then
+    printf '  → %-10s brew install\n' tmux
+    pm_install tmux
+else
+    [ -n "$tv" ] && echo "  (tmux ${tv} is older than 3.3; building ${TMUX_VERSION} from source)"
+    install_tmux_source || echo "  ! tmux: build from https://github.com/tmux/tmux/releases"
+fi
 
 # ---- finder + search --------------------------------------------------------
 echo
@@ -500,10 +508,11 @@ else
     echo "  ! uv unavailable; later run: uv tool install ruff && uv tool install ty"
 fi
 
-# ---- optional: richer yazi previews + navigation (best-effort) -------------
+# ---- optional: extra CLI tools (best-effort) -------------------------------
+# bat/fd back fzf previews and the tmux session picker; zoxide powers `z`.
 echo
-echo "Optional preview/navigation tools (best-effort):"
-for t in bat fd zoxide jq ffmpegthumbnailer poppler imagemagick 7zip; do
+echo "Optional CLI tools (best-effort):"
+for t in bat fd zoxide jq; do
     pkg="$(pkg_for "$t")"
     if [ -n "$pkg" ]; then
         printf '  → %s (%s)\n' "$t" "$pkg"
@@ -514,7 +523,7 @@ for t in bat fd zoxide jq ffmpegthumbnailer poppler imagemagick 7zip; do
 done
 
 # Debian/Ubuntu install fd-find/bat under different binary names; expose the
-# expected `fd` / `bat` names in ~/.local/bin so yazi's previews find them.
+# expected `fd` / `bat` names in ~/.local/bin so fzf and the tmux picker find them.
 if [ "$PM" = "apt-get" ] && [ "$DRY_RUN" != "1" ]; then
     command -v fdfind >/dev/null 2>&1 && [ ! -e "$LOCAL_BIN/fd" ]  && ln -sf "$(command -v fdfind)" "$LOCAL_BIN/fd"
     command -v batcat >/dev/null 2>&1 && [ ! -e "$LOCAL_BIN/bat" ] && ln -sf "$(command -v batcat)" "$LOCAL_BIN/bat"
@@ -534,11 +543,11 @@ if [ "$PM" != "brew" ]; then
     maybe_upgrade fd     10.0 install_rust_release sharkdp/fd         fd      fd     v  gnu
 fi
 
-# ---- Nerd Font (icons in neovim / yazi) ------------------------------------
+# ---- Nerd Font (icons in neovim) -------------------------------------------
 # Only matters where you actually RUN a terminal (your Mac, or the Linux box if
 # used locally) — over SSH the glyphs are drawn by the Mac's Ghostty.
 echo
-echo "Nerd Font (Hack — neovim/yazi icons):"
+echo "Nerd Font (Hack — neovim icons):"
 if font_present; then
     echo "  ✓ Hack Nerd Font present"
 elif [ "$PM" = "brew" ] && [ "$OS" = "Darwin" ]; then
