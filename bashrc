@@ -40,9 +40,9 @@ case $- in *i*) ;; *) return ;; esac
 
 # Set a cross-shell PS1 prompt
 if [ "$SHELL_TYPE" = "bash" ]; then
-    PS1="\[\e[32m\]\u:\w\[\e[m\]\$ "
+    PS1="\[\e[32m\]\u\[\e[m\]:\[\e[34m\]\w\[\e[m\]\$ "
 elif [ "$SHELL_TYPE" = "zsh" ]; then
-    PS1="%F{green}%n:%~%f$ "
+    PS1="%F{green}%n%f:%F{blue}%~%f$ "
 fi
 
 # Source alias file if it exists
